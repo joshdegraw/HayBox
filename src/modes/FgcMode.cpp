@@ -1,16 +1,13 @@
 #include "modes/FgcMode.hpp"
 
 FgcMode::FgcMode(socd::SocdType socd_type) : ControllerMode(socd_type) {
-    _socd_pair_count = 1;
+    _socd_pair_count = 0;
+    // For SF6 I'm electing to have no SOCD cleaning per Capcom Pro Tour rules.
     _socd_pairs = new socd::SocdPair[_socd_pair_count]{
-        socd::SocdPair{&InputState::left, &InputState::right},
     };
 }
 
 void FgcMode::HandleSocd(InputState &inputs) {
-    if (inputs.down && (inputs.mod_x || inputs.c_up)) {
-        inputs.down = false;
-    }
     InputMode::HandleSocd(inputs);
 }
 
@@ -37,7 +34,10 @@ void FgcMode::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
     outputs.y = inputs.y;
     outputs.buttonR = inputs.lightshield;
     outputs.buttonL = inputs.midshield;
-}
+
+    // Personal additions.
+    outputs.select = inputs.a;
+}   
 
 void FgcMode::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     outputs.leftStickX = 128;
